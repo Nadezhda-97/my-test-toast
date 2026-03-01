@@ -94,7 +94,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
       clearTimers();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration]);
+  }, [duration, toast.updatedAt]);
 
   const formatTime = (ms: number) => {
     const seconds = Math.ceil(ms / 1000);
