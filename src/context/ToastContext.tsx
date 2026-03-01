@@ -11,10 +11,36 @@ const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = (toast: Omit<Toast, 'id'>) => {
-    const id = String(Date.now());
-    setToasts((prev) => [...prev, { ...toast, id }]);
-  };
+  const addToast = (newToast: Omit<Toast, 'id'>) => {
+  setToasts((prev) => {
+    const existing = prev.find(
+      (t) =>
+        t.message === newToast.message &&
+        t.type === newToast.type
+    );
+
+    if (existing) {
+      return prev.map((t) =>
+        t.id === existing.id
+          ? {
+              ...t,
+              duration: newToast.duration ?? 5000,
+              updatedAt: Date.now(),
+            }
+          : t
+      );
+    }
+
+    return [
+      ...prev,
+      {
+        ...newToast,
+        id: String(Date.now()),
+        updatedAt: Date.now(),
+      },
+    ];
+  });
+};
 
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
